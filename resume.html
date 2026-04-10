@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Resume</title>
+  <style>
+    /* Reset default body styles */
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(180deg, #1e1e1e, #2a2a2a); /* Softer dark background */
+      color: #fff;
+      font-family: Arial, sans-serif;
+    }
+
+    .pdf-container {
+      min-height: 100vh; /* Full screen */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: transparent; /* Removes any white background block */
+    }
+
+    .pdf-container img {
+      max-width: 100%;
+      max-height: 95vh; /* Taller image */
+      object-fit: contain;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.15);
+      background-color: transparent; /* Removes any inner white */
+    }
+
+    .download-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background-color: #2e2e2e;
+      color: #fff;
+      text-decoration: none;
+      padding: 12px 22px;
+      border-radius: 8px;
+      font-weight: 500;
+      margin-bottom: 25px;
+      transition: background 0.3s ease, transform 0.2s ease;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    }
+
+    .download-btn:hover {
+      background-color: #3a3a3a;
+      transform: translateY(-2px);
+    }
+
+    .download-btn svg {
+      width: 22px;
+      height: 22px;
+      fill: #fff;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="pdf-container">
+    <a 
+      href="https://drive.google.com/uc?export=download&id=1P9VpscsAqIZuUY3kgcOoDPfsvnuiF_cI" 
+      class="download-btn"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+        <path d="M13 10V3H7v7H4l6 6 6-6h-3zM4 18h12v-2H4v2z"/>
+      </svg>
+      Download PDF
+    </a>
+
+    <img 
+      src="images/Levi J2 Belcina Resume.png" 
+      alt="Amazon Certificate Preview"
+    >
+  </div>
+
+</body>
+</html>

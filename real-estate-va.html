@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Levi J2 | Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
+    <style>
+        html {
+            scroll-behavior: smooth;
+            background-color: #f3f4f6;
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+        .bg-decor {
+            background-image: radial-gradient(circle at 10% 20%, rgba(0,0,0,0.05) 5px, transparent 0),
+                                radial-gradient(circle at 90% 80%, rgba(255,255,255,0.08) 10px, transparent 0),
+                                linear-gradient(135deg, rgba(0,0,0,0.03) 25%, transparent 25%);
+            background-size: 100px 100px, 150px 150px, 40px 40px;
+            background-repeat: no-repeat;
+        }
+        header {
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            pointer-events: none;
+        }
+        header.visible {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+        .signature {
+            font-family: "Brush Script MT", cursive;
+            font-size: 2rem;
+        }
+        #subtitle {
+            display: inline-block;
+            white-space: nowrap;
+            overflow: hidden;
+            font-family: inherit;
+            min-height: 2rem;
+            position: relative;
+            padding-right: 0.2em;
+            margin-top: 2rem;
+        }
+        #subtitle::after {
+            content: "";
+            position: absolute;
+            right: 0;
+            width: 0.1em;
+            height: 100%;
+            background: white;
+            animation: blink-caret 0.75s step-end infinite;
+        }
+        @keyframes blink-caret {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
+        }
+        #home {
+            clip-path: none;
+        }
+
+        #vanta-nav-bg canvas {
+            position: absolute !important;
+            top: 0;
+            left: 0;
+            z-index: 0;
+        }
+
+        /* ctrl+F5 Pop up */
+        .popup-backdrop {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            animation: fadeIn 0.3s ease forwards;
+        }
+
+        .popup-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 300px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            transform: scale(0.8);
+            opacity: 0;
+            animation: popIn 0.3s ease forwards;
+        }
+
+        .popup-card button {
+            margin-top: 10px;
+            padding: 6px 12px;
+            border: none;
+            background: #333;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes popIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+
+        @keyframes popOut {
+            from { opacity: 1; transform: scale(1); }
+            to { opacity: 0; transform: scale(0.8); }
+        }
+
+        .closing {
+            animation: fadeOut 0.3s ease forwards;
+        }
+        .closing .popup-card {
+            animation: popOut 0.3s ease forwards;
+        }
+
+    </style>
+</head>
+<body class="text-gray-800 font-sans bg-gray-100">
+
+    <!-- Sticky Navigation -->
+    <header id="stickyHeader" class="fixed top-0 left-0 w-full z-50 bg-white/70 backdrop-blur shadow-md">
+        <nav class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+        <h1 class="signature text-indigo-600">Portfolio</h1>
+        <ul class="hidden md:flex space-x-6 text-sm font-semibold text-gray-700">
+            <li><a href="Index.html#home" class="hover:text-indigo-600">Home</a></li>
+            <li><a href="Index.html#about" class="hover:text-indigo-600">About</a></li>
+            <li><a href="Index.html#certificate" class="hover:text-indigo-600">Certificate</a></li>
+            <li><a href="Index.html#resume" class="hover:text-indigo-600">Resume</a></li>
+            <li><a href="Index.html#services" class="hover:text-indigo-600">Services</a></li>
+            <li><a href="Index.html#portfolio" class="hover:text-indigo-600">Works</a></li>
+            <li><a href="#contact" class="hover:text-indigo-600">Contact</a></li>
+        </ul>
+        </nav>
+    </header> 
+
+    <!-- Hero with Vanta Background -->
+    <div id="vanta-nav-bg" class="w-full h-20 top-0 left-0 z-0">
+        <div class="absolute top-0 left-0 w-full z-40">
+        <nav class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="signature text-white">Portfolio</h1>
+            <ul class="hidden md:flex space-x-6 text-sm font-semibold text-white">
+                <li><a href="Index.html#home" class="hover:text-indigo-400">Home</a></li>
+                <li><a href="Index.html#about" class="hover:text-indigo-400">About</a></li>
+                <li><a href="Index.html#certificate" class="hover:text-indigo-400">Certificate</a></li>
+                <li><a href="Index.html#resume" class="hover:text-indigo-400">Resume</a></li>
+                <li><a href="Index.html#services" class="hover:text-indigo-400">Services</a></li>
+                <li><a href="Index.html#portfolio" class="hover:text-indigo-400">Works</a></li>
+                <li><a href="#contact" class="hover:text-indigo-400">Contact</a></li>
+            </ul>
+        </nav>
+        </div>
+    </div><br>
+
+    <section id="portfolio" class="py-20 px-6 max-w-7xl mx-auto bg-[#f9fafb] bg-decor rounded-xl shadow">
+    <div class="text-center mb-10" style="font-family: 'Josefin Sans', sans-serif;">
+        <h2 class="text-3xl font-bold inline-block relative mb-5">Works</h2>
+        <div class="w-[150px] h-[1px] bg-gray-300 mx-auto mb-4 relative">
+            <div class="absolute top-0 h-[1px] w-[50px] bg-indigo-600 left-1/2 transform -translate-x-1/2"></div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- Left Side Main Work -->
+        <div class="md:col-span-2 space-y-6">
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden transition hover:shadow-2xl">
+                <img src="images/Work/Real Estate Virtual Assistant.png" alt="Real Estate Virtual Assistant" class="w-full object-cover" />
+                <div class="p-6" style="font-family: 'Josefin Sans', sans-serif;">
+                    <h3 class="text-2xl font-bold mb-2">Real Estate Virtual Assistant</h3>
+                    <p class="text-gray-600 text-1xl mb-4 text-justify">I completed in-depth training as a Real Estate Virtual Assistant, where I gained hands-on experience in various real estate tasks. Below are some of my sample works that demonstrate my skills in property research, transaction coordination, listing input, rental management, and more.</p>
+
+                    <div class="mb-4"><br><br>
+                        <h4 class="text-md font-semibold mb-1">SAMPLE WORK #1 – Property Look-up Activity</h4>
+                        <img src="images/Work/REVA/1st Activity/Property Look-up Activity.png" alt="Property Look-up" class="w-full h-auto rounded" />
+                        <br>
+                        <p class="text-gray-600 text-1xl mb-4 text-justify">I searched property details for Brockton, Massachusetts using Zillow, Google, and the Massachusetts Interactive Property Map, then recorded the information in a spreadsheet.</p>
+                    </div>
+
+                    <div class="mb-4"><br><br>
+                        <h4 class="text-md font-semibold mb-1">SAMPLE WORK #2 – Comparables Activity</h4>
+                        <img src="images/Work/REVA/2nd Activity/Comparables Activity.png" alt="Comparables" class="w-full h-auto rounded" />
+                        <br>
+                        <p class="text-gray-600 text-1xl mb-4 text-justify">I looked for comparable properties (comps) based on location, property size, number of beds and baths, and price. I gathered data from Zillow and Realtor.com to compare active, pending, and sold listings, and added the information to a spreadsheet for analysis.</p>
+                    </div>
+
+                    <div class="mb-4"><br><br>
+                        <h4 class="text-md font-semibold mb-1">SAMPLE WORK #3 – Listing Input Activity</h4>
+                        <img src="images/Work/REVA/MLS/Listing Input Activity.png" alt="Listing Input" class="w-full h-auto rounded" />
+                        <br>
+                        <img src="images/Work/REVA/MLS/Listing Input Activity 2.png" alt="Listing Input 2" class="w-full h-auto rounded" />
+                        <br>
+                        <p class="text-gray-600 text-1xl mb-4 text-justify">I entered property details into the MLS or listing platforms, including price, address, property description, photos, and features like beds, baths, and lot size. I made sure all information was accurate and complete before publishing.</p>
+                    </div>
+
+                    <div class="mb-4"><br><br>
+                        <h4 class="text-md font-semibold mb-1">SAMPLE WORK #4 – Rental Property Activity</h4>
+                        <img src="images/Work/REVA/Rental Properties/PMVA Activity.png" alt="PMVA Activity" class="w-full h-auto rounded" />
+                        <br>
+                        <img src="images/Work/REVA/Rental Properties/Types of Rental Properties.png" alt="Types of Rental Properties" class="w-full h-auto rounded" />
+                        <br>
+                        <img src="images/Work/REVA/Rental Properties/PMVA Rental Properties.png" alt="PMVA Rental Properties" class="w-full h-auto rounded" />
+                        <br>
+                        <p class="text-gray-600 text-1xl mb-4 text-justify">I researched 2 rental properties per property type from Mississippi. I gathered their daily, weekly, monthly, and annual rental rates (if available) using Zillow and rental listing websites, then organized the data in a clear and structured format.</p>
+                    </div>
+
+                    <div class="mb-4"><br><br>
+                        <h4 class="text-md font-semibold mb-1">SAMPLE WORK #5 – Tenant Lease Agreement Activity</h4>
+                        <img src="images/Work/REVA/Tenant Lease Agreement/Tenant Lease Agreement Activity.png" alt="Tenant Lease Agreement" class="w-full h-auto rounded" />
+                        <br>
+                        <img src="images/Work/REVA/Tenant Lease Agreement/Docuhub.png" alt="Docuhub" class="w-full h-auto rounded" />
+                        <br>
+                        <p class="text-gray-600 text-1xl mb-4 text-justify">I filled out tenant lease agreement forms with accurate property and tenant details. I reviewed the lease terms, rent amount, and key dates, then used DocHub to send the agreement for e-signatures and ensure all parties signed the document properly.</p>
+                    </div>
+
+                    <div class="mb-4"><br><br>
+                        <h4 class="text-md font-semibold mb-1">SAMPLE WORK #6 – Accounting Short Term Rental</h4>
+                        <img src="images/Work/REVA/PMVA Accounting-short-term-rental.png" alt="Accounting Short Term Rental" class="w-full h-auto rounded" />
+                        <br>
+                        <p class="text-gray-600 text-1xl mb-4 text-justify">I tracked income and expenses for short-term rental properties using spreadsheets. I recorded payments, cleaning fees, utility costs, and other charges to help keep accurate financial records and monitor profit.</p>
+                    </div>
+
+                    <div class="mb-4"><br><br>
+                        <h4 class="text-md font-semibold mb-1">SAMPLE WORK #7 – Buildium</h4>
+                        <img src="images/Work/REVA/Buildium.png" alt="Buildium" class="w-full h-auto rounded" />
+                        <br>
+                        <p class="text-gray-600 text-1xl mb-4 text-justify">I used Buildium to manage property records, enter bills, update tenant and owner information, and track rent payments. I also helped with setting up properties and keeping data organized for easier management.</p>
+                    </div>                    
+
+                    
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Side Other Posts -->
+        <div class="space-y-4">
+
+        <a href="amazon-va.html" class="block bg-white rounded-xl shadow hover:shadow-lg transition overflow-hidden">
+            <div class="flex items-center">
+                <img src="images/Work/Amazon Virtual Assistant.png" alt="Amazon Virtual Assistant" class="w-20 h-20 object-cover" />
+                <div class="ml-4">
+                    <h4 class="text-sm font-semibold text-gray-700">Amazon Virtual Assistant</h4>
+                </div>
+            </div>
+        </a>
+
+        <a href="social-media-management.html" class="block bg-white rounded-xl shadow hover:shadow-lg transition overflow-hidden">
+            <div class="flex items-center">
+                <img src="images/Work/Social Media Management.png" alt="Social Media Management" class="w-20 h-20 object-cover" />
+                <div class="ml-4">
+                    <h4 class="text-sm font-semibold text-gray-700">Social Media Management</h4>
+                </div>
+            </div>
+        </a>
+        
+        <a href="data-entry.html" class="block bg-white rounded-xl shadow hover:shadow-lg transition overflow-hidden">
+            <div class="flex items-center">
+                <img src="images/Work/Data Entry.png" alt="Data Entry" class="w-20 h-20 object-cover" />
+                <div class="ml-4">
+                    <h4 class="text-sm font-semibold text-gray-700">Data Entry</h4>
+                </div>
+            </div>
+        </a>
+        </div>
+    </div>
+    </section><br>
+
+
+
+
+    <!-- Contact -->
+    <section id="contact" class="contact section-padding w-full py-20 px-6 bg-cover bg-center shadow" style="background-color: #1f2937; background-image: linear-gradient(145deg, #1f2937, #111827);">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-wrap">
+                <!-- Contact Form -->
+                <div class="w-full md:w-7/12 px-4"><br><br>
+                    <h4 class="text-3xl font-bold text-white mb-2" style="font-family: 'Josefin Sans', sans-serif;">Get In Touch</h4>
+                    <div class="w-[170px] h-[1px] bg-gray-300 mb-6 relative">
+                        <div class="absolute top-0 h-[1px] w-[62px] bg-indigo-600 left-0"></div>
+                    </div><br><br>
+                    <form action="https://formsubmit.co/j2.belcina@gmail.com" method="POST" class="space-y-4" id="contactForm">
+                        <input type="hidden" name="_captcha" value="false">
+                        <input type="hidden" name="_next" value="https://i0age0aazgtttg8nz3f0bw.on.drv.tw/Portfolio/Index.html">
+                        <input type="text" name="fullname" placeholder="Name* :" required class="w-full px-4 py-3 border border-gray-500 bg-gray-800 text-white" />
+                        <input type="email" name="email" placeholder="E-mail* :" required class="w-full px-4 py-3 border border-gray-500 bg-gray-800 text-white" />
+                        <textarea name="message" placeholder="Message* :" required class="w-full px-4 py-3 min-h-[200px] border border-gray-500 bg-gray-800 text-white"></textarea>
+                        <button type="submit" class="bg-indigo-600 text-white px-6 py-3 hover:bg-indigo-700 transition">Send</button>
+                    </form>
+                </div>
+
+                <!-- Contact Info Box -->
+                <div class="w-full md:w-5/12 px-4 mt-12 md:mt-0 flex items-stretch">
+                    <div class="bg-gray-800 p-6 text-white text-center flex flex-col justify-between w-full">
+                        <div>
+                            <div class="mb-6">
+                                <div class="flex justify-center mb-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-indigo-600" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M12 2C8.13 2 5 5.13 5 9c0 7.25 7 13 7 13s7-5.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5 14.5 7.62 14.5 9 13.38 11.5 12 11.5z"/>
+                                    </svg>
+                                </div>
+                                <h6 class="text-lg font-semibold">Address :</h6>
+                                <p>Dumaguete City,<br />Philippines</p>
+                            </div>
+                            <div class="mb-6">
+                                <div class="flex justify-center mb-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-indigo-600" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.1.89 2 2 2h16c1.11 0 2-.9 2-2V6c0-1.11-.89-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                                    </svg>
+                                </div>
+                                <h6 class="text-lg font-semibold">Email :</h6>
+                                <p>j2.belcina@gmail.com</p>
+                            </div>
+                        </div>
+                        <!-- Social Links -->
+                        <div class="flex justify-center space-x-4 mt-4">
+                            <a href="https://www.facebook.com/terrorph/" class="text-white" aria-label="Facebook">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M22 12c0-5.522-4.477-10-10-10S2 6.478 2 12c0 5.006 3.676 9.134 8.438 9.878v-6.987H7.898v-2.89h2.54V9.797c0-2.507 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.242 0-1.63.771-1.63 1.562v1.875h2.773l-.443 2.89h-2.33v6.987C18.324 21.134 22 17.006 22 12z"/>
+                                </svg>
+                            </a>
+                            <a href="https://www.linkedin.com/in/levi-j2-belcina-35543434a/" class="text-white" aria-label="LinkedIn">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M19 0h-14C2.239 0 0 2.239 0 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5V5c0-2.761-2.238-5-5-5zM8.339 19.001H5.673V9h2.666v10.001zM7.006 7.687c-.855 0-1.548-.692-1.548-1.547 0-.854.693-1.547 1.548-1.547.854 0 1.547.693 1.547 1.547 0 .855-.693 1.547-1.547 1.547zM19 19.001h-2.666v-5.606c0-1.336-.027-3.054-1.862-3.054-1.861 0-2.146 1.453-2.146 2.955v5.705H9.66V9h2.561v1.364h.037c.356-.675 1.226-1.387 2.524-1.387 2.698 0 3.197 1.775 3.197 4.084v5.94z"/>
+                                </svg>
+                            </a>
+                        </div>
+
+                        <a href="https://wa.me/639173298355" 
+                            target="_blank" 
+                            style="background-color:#25D366; color:white; padding:10px 16px; border-radius:8px; text-decoration:none; display:inline-block;">
+                            💬 Chat on WhatsApp
+                        </a>
+
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <div class="w-full text-center text-white mt-12"><br><br><br>
+                    <p>© 2025 Levi J2 Belcina. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Success Popup -->
+    <div id="successPopup" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+        <div class="bg-white p-8 rounded-lg shadow-lg text-center max-w-sm">
+            <h2 class="text-2xl font-bold mb-4 text-green-600">Thank you!</h2>
+            <p class="text-gray-700 mb-6">Your message has been sent successfully.</p>
+            <button onclick="closePopup()" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition">Close</button>
+        </div>
+    </div>
+
+
+
+    <!-- Back to Top Button -->
+    <button id="backToTopBtn"
+        class="fixed bottom-6 right-6 bg-indigo-600 text-white p-3 shadow-lg hover:bg-indigo-700 transition-all duration-300 z-50 flex items-center justify-center translate-x-20 opacity-0 pointer-events-none"
+        style="border-radius: 0.25rem; width: 48px; height: 48px;"
+        aria-label="Back to Top">
+        <!-- Bold Up Arrow Icon -->
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 15l7-7 7 7" />
+        </svg>
+    </button>
+
+    <!-- ctrl+F5 pop-up -->
+    <div id="reloadTip" class="popup-backdrop">
+        <div class="popup-card">
+        <p>If images not loading, try <br><strong>Ctrl + F5</strong>.</p>
+        <button id="closePopup">OK</button>
+        </div>
+    </div>
+
+    <script>
+
+        VANTA.NET({
+            el: "#vanta-nav-bg",
+            mouseControls: true,
+            touchControls: true,
+            minHeight: 0.1,
+            minWidth: 0.1,
+            scale: 1.0,
+            scaleMobile: 1.0,
+            color: 0x2196f3,
+            backgroundColor: 0x000000,
+            spacing: 16
+        });
+
+        const header = document.getElementById('stickyHeader');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 100) {
+                header.classList.add('visible');
+            } else {
+                header.classList.remove('visible');
+            }
+        });
+
+        const subtitles = [
+            "Virtual Assistant",
+            "Real Estate Virtual Assistant",
+            "Social Media Manager",
+            "Data Entry"
+        ];
+
+        let index = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+        const typingSpeed = 100;
+        const deletingSpeed = 50;
+        const pause = 2000;
+        const subtitleElement = document.getElementById("subtitle");
+
+        function typeEffect() {
+            const current = subtitles[index];
+            if (!isDeleting && charIndex === 0) {
+                subtitleElement.textContent = "";
+            }
+            if (isDeleting) {
+                subtitleElement.textContent = current.substring(0, charIndex--);
+                if (charIndex < 0) {
+                    isDeleting = false;
+                    index = (index + 1) % subtitles.length;
+                }
+            } else {
+                subtitleElement.textContent = current.substring(0, charIndex++);
+                if (charIndex > current.length) {
+                    isDeleting = true;
+                    setTimeout(typeEffect, pause);
+                    return;
+                }
+            }
+            setTimeout(typeEffect, isDeleting ? deletingSpeed : typingSpeed);
+        }
+
+        setTimeout(typeEffect, 500);
+
+
+
+        //Contact Section (pop up)
+        document.getElementById("contactForm").addEventListener("submit", function(event) {
+            // do not prevent default for FormSubmit
+            // event.preventDefault();
+
+            // delay showing popup
+            setTimeout(() => {
+                document.getElementById("successPopup").classList.remove("hidden");
+            }, 1000);
+        });
+
+        function closePopup() {
+            document.getElementById("successPopup").classList.add("hidden");
+            document.getElementById("contactForm").reset();
+        }
+
+
+        //<!-- Script to toggle visibility --> Up Arrow 
+        const backToTopBtn = document.getElementById('backToTopBtn');
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 200) {
+                backToTopBtn.classList.remove('translate-x-20', 'opacity-0', 'pointer-events-none');
+                backToTopBtn.classList.add('translate-x-0', 'opacity-100');
+            } else {
+                backToTopBtn.classList.add('translate-x-20', 'opacity-0', 'pointer-events-none');
+                backToTopBtn.classList.remove('translate-x-0', 'opacity-100');
+            }
+        });
+
+        backToTopBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // ctrl+F5 pop up
+        window.addEventListener("load", function() {
+            const popup = document.getElementById("reloadTip");
+            const closeBtn = document.getElementById("closePopup");
+
+            popup.style.display = "flex"; // show popup
+
+            closeBtn.addEventListener("click", () => {
+                popup.classList.add("closing");
+                setTimeout(() => popup.style.display = "none", 300); // hide after animation
+            });
+        });
+
+    </script>
+
+    <!-- Google Font for handwriting -->
+    <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
+
+  
+
+
+</body>
+</html>
